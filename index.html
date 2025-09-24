@@ -68,7 +68,7 @@
                 <input type="password" id="teacher-password" class="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4" placeholder="Contrasenya">
                 <button type="submit" class="w-full bg-gray-700 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-800 transition-colors duration-300">Entrar</button>
             </form>
-             <div id="teacher-login-error" class="mt-4 text-red-600 text-sm hidden">Contrasenya incorrecta.</div>
+             <div id="teacher-login-error" class="mt-4 text-red-600 text-sm"></div>
         </div>
     </div>
 
@@ -296,7 +296,7 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
 
         function parseStudentData(csvString) {
             const lines = csvString.trim().split('\n');
-            const header = lines.shift().toLowerCase(); // Remove header, could check it for "alumne,email"
+            const header = lines.shift().toLowerCase();
             
             students = lines.map(line => {
                 const parts = line.split(',');
@@ -305,7 +305,7 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
                     name: parts[0].trim(),
                     email: parts[1].trim()
                 };
-            }).filter(Boolean) // Remove null entries from malformed lines
+            }).filter(Boolean)
               .sort((a, b) => a.name.localeCompare(b.name));
         }
         
@@ -319,7 +319,7 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
         }
 
         function populateStudentDropdown() {
-            studentNameSelect.innerHTML = '<option value="" disabled selected>-- Selecciona el teu nom --</option>'; // Clear previous options
+            studentNameSelect.innerHTML = '<option value="" disabled selected>-- Selecciona el teu nom --</option>';
             
             const allResults = JSON.parse(localStorage.getItem('testResults')) || [];
             const submittedEmails = allResults.map(result => result.studentEmail);
@@ -347,7 +347,7 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
         // --- Quiz Logic ---
         const defaultTestCSV = `pregunta,opcio_a,opcio_b,opcio_c,opcio_d,resposta_correcta
 "Quines partícules de l'àtom tenen càrrega elèctrica positiva (+) i es troben al nucli?","Electrones","Protons","Neutrons","Ions",b
-"Quina afirmació és correcta sobre l'electricitat dinàmica (o corrent elèctric)?","Es genera quan els electrons s'acumulen a la vora d'un cos.","Es produeix quan els electrons flueixen a través d'un cos d'un extrem a l'altre .","Es manifesta només per la seva presència.","Està relacionada principalmente amb les descàrregues.",b
+"Quina afirmació és correcta sobre l'electricitat dinàmica (o corrent elèctric)?","Es genera quan els electrons s'acumulen a la vora d'un cos.","Es produeix quan els electrons flueixen a través d'un cos d'un extrem a l'altre .","Es manifesta només per la seva presència.","Està relacionada principalement amb les descàrregues.",b
 "Quin dels següents materials es classifica com un material aïllant a causa de la seva alta resistència elèctrica?","Coure","Plata","Goma","Alumini",c
 "Quin efecte del corrent elèctric s'aprofita principalment en els motors elèctrics?","Efecte calorífic","Efecte lluminós","Efecte magnètic","Efecte mecànic",d
 "Quina magnitud elèctrica s'expressa en Ohm (Ω) i representa l'oposició al pas del corrent elèctric?","Tensió","Intensitat","Resistència","Potència",c
@@ -376,6 +376,16 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
 "Com s'estructuren les Instruccions Tècniques Complementàries (ITC-BTs) dins del REBT, segons les fonts?","En ordre alfabètic de temes.","De manera cronològica segons la sua publicació.","De manera arbòria, sent el tronc l'origen de la instal·lació i cada branca el tipus de receptor .","Com un llistat únic de prescripcions generals sense organització interna.",c
 "Les normes de la companyia subministradora (com Endesa NRZ103 per a les instal·lacions d'enllaç a Balears) són d'obligat compliment?","No, només són recomanacions.","Sí, però només si contradiuen el REBT.","Sí, són d'obligat compliment sempre que no contradiguin reglaments superiors i estiguin aprovades per la Direcció General d'Indústria .","No, només s'apliquen a les xarxes d'alta tensió.",c
 "Quina ITC-BT s'encarrega de regular les instal·lacions interiors en habitatges que contenen una banyera o dutxa?","ITC-BT-25","ITC-BT-26","ITC-BT-27","ITC-BT-31",c
+"Què significa ""CA"" en electricitat?","Corrent d'Amperatge","Corrent Altern","Corrent Actiu","Capacitat d'Ampere",b
+"Quina és la unitat de la càrrega elèctrica?","Amper","Volt","Watt","Coulomb",d
+"Quin tipus de material permet que l'electricitat flueixi fàcilment?","Aïllant","Conductor","Semiconductor","Resistor",b
+"Quin és un dispositiu de seguretat que es fon per interrompre un circuit?","Interruptor","Resistor","Fusible","Condensador",c
+"Quina és la principal font d'energia per a la majoria de centrals elèctriques?","Solar","Eòlica","Combustibles fòssils","Geotèrmica",c
+"Quina llei descriu la relació entre tensió, corrent i resistència?","Llei de Watt","Llei d'Ohm","Llei de Kirchhoff","Llei de Faraday",b
+"Quin dispositiu emmagatzema energia elèctrica en un camp elèctric?","Inductor","Transistor","Díode","Condensador",d
+"Quina és la freqüència del corrent altern a Europa?","60 Hz","50 Hz","120 Hz","100 Hz",b
+"En un circuit en paral·lel, què es manté constant en tots els components?","Corrent","Resistència","Tensió","Potència",c
+"Com s'anomena la partícula amb càrrega negativa?","Protó","Neutró","Electró","Positró",c
 `;
         
         let questions = [];
@@ -397,7 +407,7 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
         const saveStatus = document.getElementById('save-status');
         
         function parseTestFromSheetData(sheetData) {
-            if (!sheetData || sheetData.length < 1) {
+            if (!sheetData || sheetData.length < 1) { 
                 throw new Error("El fitxer està buit.");
             }
             
@@ -721,15 +731,60 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
              showView(roleSelectionView);
         });
 
+        const BLOCK_DURATION = 60 * 60 * 1000; // 1 hour in ms
+        const MAX_ATTEMPTS = 3;
+
         teacherLoginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            teacherLoginError.classList.add('hidden');
+            teacherLoginError.textContent = '';
+            
+            let attempts = JSON.parse(localStorage.getItem('loginAttempts')) || { count: 0, timestamp: 0 };
+            const now = new Date().getTime();
+
+            // Check if blocked
+            if (attempts.count >= MAX_ATTEMPTS && (now - attempts.timestamp) < BLOCK_DURATION) {
+                const timeLeft = Math.ceil((BLOCK_DURATION - (now - attempts.timestamp)) / (60 * 1000));
+                teacherLoginError.textContent = `Accés bloquejat. Intenta-ho de nou en ${timeLeft} minuts.`;
+                teacherLoginForm.style.display = 'none';
+                return;
+            }
+
+            // Reset attempts if block has expired
+            if ((now - attempts.timestamp) >= BLOCK_DURATION) {
+                attempts = { count: 0, timestamp: 0 };
+            }
+
             if (teacherPasswordInput.value === 'xanadu') {
+                localStorage.removeItem('loginAttempts');
                 displayTeacherResults();
                 showView(configView);
             } else {
-                teacherLoginError.classList.remove('hidden');
+                attempts.count++;
+                attempts.timestamp = now;
+                localStorage.setItem('loginAttempts', JSON.stringify(attempts));
+
+                if (attempts.count >= MAX_ATTEMPTS) {
+                     teacherLoginError.textContent = `Accés bloquejat durant 1 hora per massa intents fallits.`;
+                     teacherLoginForm.style.display = 'none';
+                } else {
+                     teacherLoginError.textContent = `Contrasenya incorrecta. Et queden ${MAX_ATTEMPTS - attempts.count} intents.`;
+                }
             }
+        });
+
+        teacherRoleBtn.addEventListener('click', () => {
+            let attempts = JSON.parse(localStorage.getItem('loginAttempts')) || { count: 0, timestamp: 0 };
+            const now = new Date().getTime();
+
+            teacherLoginForm.style.display = 'block';
+            teacherLoginError.textContent = '';
+            
+            if (attempts.count >= MAX_ATTEMPTS && (now - attempts.timestamp) < BLOCK_DURATION) {
+                const timeLeft = Math.ceil((BLOCK_DURATION - (now - attempts.timestamp)) / (60 * 1000));
+                teacherLoginError.textContent = `Accés bloquejat. Intenta-ho de nou en ${timeLeft} minuts.`;
+                teacherLoginForm.style.display = 'none';
+            }
+            showView(teacherLoginView);
         });
 
         const clearResultsBtn = document.getElementById('clear-results-btn');
@@ -749,6 +804,8 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
 
         teacherLogoutBtn.addEventListener('click', () => {
              teacherPasswordInput.value = '';
+             teacherLoginError.textContent = '';
+             teacherLoginForm.style.display = 'block';
              clearResultsBtn.textContent = 'Esborrar tots els resultats';
              clearResultsBtn.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
              clearResultsBtn.classList.add('bg-red-600', 'hover:bg-red-700');
@@ -963,11 +1020,10 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
 
                     if (sheetData.length < 1) throw new Error("El fitxer d'alumnes està buit.");
 
-                    // Convertir a CSV para guardar
                     const studentCSV = XLSX.utils.sheet_to_csv(worksheet);
                     localStorage.setItem('customStudentListCSV', studentCSV);
                     
-                    loadActiveStudentList(); // Recargar la lista de estudiantes
+                    loadActiveStudentList();
 
                     studentLoadStatus.textContent = `Llistat carregat correctament amb ${students.length} alumnes.`;
                     studentLoadStatus.className = 'mt-2 text-sm text-green-600';
