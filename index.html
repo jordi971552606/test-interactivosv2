@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="ca">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -46,13 +46,53 @@
 </head>
 <body class="bg-gray-100 text-gray-800">
 
+    <div id="password-protection" class="fixed inset-0 bg-gray-900 bg-opacity-95 flex items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-lg shadow-xl text-center max-w-sm mx-auto">
+            <h2 class="text-2xl font-bold mb-4">Acceso Restringido</h2>
+            <p class="text-gray-600 mb-6">Por favor, introduce la contraseña para continuar.</p>
+            <form id="password-form">
+                <input type="password" id="password-input" class="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4" placeholder="Contraseña">
+                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">Acceder</button>
+            </form>
+            <p id="password-error" class="text-red-500 text-sm mt-4 hidden">Contraseña incorrecta.</p>
+        </div>
+    </div>
+    
+    <div id="main-content" style="display:none;">
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordProtection = document.getElementById('password-protection');
+            const passwordForm = document.getElementById('password-form');
+            const passwordInput = document.getElementById('password-input');
+            const passwordError = document.getElementById('password-error');
+            const mainContent = document.getElementById('main-content');
+
+            passwordForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const enteredPassword = passwordInput.value;
+                const correctPassword = '5QRyvwJTU2vvnUYff0wi';
+
+                if (enteredPassword === correctPassword) {
+                    passwordProtection.style.display = 'none';
+                    mainContent.style.display = 'block';
+                } else {
+                    passwordError.classList.remove('hidden');
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                }
+            });
+        });
+    </script>
+
+
     <!-- Vista de Selección de Rol -->
     <div id="role-selection-view" class="flex items-center justify-center h-screen">
         <div class="text-center bg-white p-12 rounded-xl shadow-2xl max-w-lg">
-            <h1 class="text-3xl font-bold text-gray-900">Benvingut/da al Test d'Electricitat</h1>
-            <p class="mt-2 text-gray-600 mb-8">Si us plau, selecciona el teu rol per continuar.</p>
+            <h1 class="text-3xl font-bold text-gray-900" data-translate-key="welcomeTitle">Benvingut/da al Test d'Electricitat</h1>
+            <p class="mt-2 text-gray-600 mb-8" data-translate-key="welcomeMsg">Si us plau, selecciona el teu rol per continuar.</p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                 <button id="student-role-btn" class="bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors duration-300">Sóc Alumne</button>
+                 <button id="student-role-btn" class="bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors duration-300" data-translate-key="studentBtn">Sóc Alumne</button>
                  <button id="teacher-role-btn" class="bg-gray-700 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-800 transition-colors duration-300">Sóc Professor</button>
             </div>
         </div>
@@ -68,7 +108,7 @@
                 <input type="password" id="teacher-password" class="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4" placeholder="Contrasenya">
                 <button type="submit" class="w-full bg-gray-700 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-800 transition-colors duration-300">Entrar</button>
             </form>
-             <div id="teacher-login-error" class="mt-4 text-red-600 text-sm"></div>
+             <div id="teacher-login-error" class="mt-4 text-red-600 text-sm hidden">Contrasenya incorrecta.</div>
         </div>
     </div>
 
@@ -77,15 +117,18 @@
         <!-- Vista para introducir el nombre -->
         <div id="name-entry-view" class="flex items-center justify-center h-screen w-full">
             <div class="text-center bg-white p-12 rounded-xl shadow-2xl max-w-lg relative">
-                <button id="back-to-role-selection" class="absolute top-4 left-4 text-gray-500 hover:text-gray-800">&larr; Tornar</button>
-                <h1 class="text-3xl font-bold text-gray-900">Accés Alumnes</h1>
-                <p class="mt-2 text-gray-600 mb-8">Selecciona el teu nom a la llista per començar.</p>
+                <button id="back-to-role-selection" class="absolute top-4 left-4 text-gray-500 hover:text-gray-800" data-translate-key="backBtn">&larr; Tornar</button>
+                <h1 class="text-3xl font-bold text-gray-900" data-translate-key="studentAccessTitle">Accés Alumnes</h1>
+                <p class="mt-2 text-gray-600 mb-8" data-translate-key="studentAccessMsg">Selecciona el teu nom a la llista per començar.</p>
                 <form id="name-entry-form" class="space-y-4">
                     <select id="student-name-select" class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-700">
-                        <option value="" disabled selected>-- Selecciona el teu nom --</option>
+                        <option value="" disabled selected data-translate-key="selectNamePlaceholder">-- Selecciona el teu nom --</option>
                     </select>
                     <input type="email" id="student-email-display" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100" placeholder="El teu correu electrònic" readonly>
-                    <button type="submit" id="start-quiz-btn" class="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>Començar Test</button>
+                    
+                    <!-- La selección de idioma ha sido eliminada. El catalán es el idioma por defecto. -->
+
+                    <button type="submit" id="start-quiz-btn" class="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed" data-translate-key="startQuizBtn" disabled>Començar Test</button>
                 </form>
             </div>
         </div>
@@ -99,27 +142,27 @@
                             <p class="font-bold text-gray-900"></p>
                             <p class="text-gray-600"></p>
                          </div>
-                         <button id="back-to-start-btn" class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors duration-300">Tornar a l'inici</button>
+                         <button id="back-to-start-btn" class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors duration-300" data-translate-key="backToStartBtn">Tornar a l'inici</button>
                      </div>
-                    <h1 id="quiz-title" class="text-4xl font-bold text-gray-900">Test: Fonaments d'Electricitat</h1>
-                    <p class="mt-2 text-gray-600">Posa a prova els teus coneixements. Selecciona la resposta correcta per a cada pregunta.</p>
+                    <h1 id="quiz-title" class="text-4xl font-bold text-gray-900" data-translate-key="quizTitleDefault">Test: Fonaments d'Electricitat</h1>
+                    <p class="mt-2 text-gray-600" data-translate-key="quizSubtitle">Posa a prova els teus coneixements. Selecciona la resposta correcta per a cada pregunta.</p>
                 </header>
 
                 <div id="recording-instruction-block" class="mb-6 bg-rose-50 border-l-4 border-rose-500 text-rose-800 p-4 rounded-r-lg transition-colors duration-500" role="alert">
-                  <p class="font-bold">Pas 1: Inicia la gravació</p>
-                  <p>Fes clic al botó per obrir la pàgina de gravació. <b>Important: deselecciona les opcions de Webcam i So abans d'iniciar la gravació.</b> Quan hagis començat, torna aquí i confirma-ho.</p>
+                  <p class="font-bold" data-translate-key="recStep1Title">Pas 1: Inicia la gravació</p>
+                  <p data-translate-key="recStep1Msg">Fes clic al botó per obrir la pàgina de gravació. <b>Important: deselecciona les opcions de Webcam i So abans d'iniciar la gravació.</b> Quan hagis començat, torna aquí i confirma-ho.</p>
                   <div class="mt-3">
                       <a id="start-recording-btn" href="https://www.screencapture.com/es/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-red-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-300">
                           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                               <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                           </svg>
-                          Obrir pàgina de gravació
+                          <span data-translate-key="openRecPageBtn">Obrir pàgina de gravació</span>
                       </a>
                       <button id="confirm-recording-btn" type="button" class="hidden inline-flex items-center bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-300">
                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                          </svg>
-                          Pas 2: Confirmo que estic gravant (Desbloquejar Test)
+                          <span data-translate-key="confirmRecBtn">Pas 2: Confirmo que estic gravant (Desbloquejar Test)</span>
                       </button>
                   </div>
                 </div>
@@ -132,21 +175,24 @@
                         
                         <div id="submit-area" class="pt-6 border-t flex flex-col items-center hidden">
                              <div id="results-container" class="text-center mb-4 hidden w-full">
-                                <h2 class="text-2xl font-bold">Test Finalitzat</h2>
-                                <p class="text-gray-600">Gràcies per completar el test. Les teves respostes han estat enviades.</p>
+                                <h2 class="text-2xl font-bold" data-translate-key="testFinishedTitle">Test Finalitzat</h2>
+                                <p class="text-gray-600" data-translate-key="testFinishedMsg">Gràcies per completar el test. Les teves respostes han estat enviades.</p>
                                 <div id="save-status" class="text-sm text-gray-500 mt-2"></div>
                                 <div id="stop-recording-reminder" class="hidden mt-6 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 rounded-r-lg text-left">
-                                    <p class="font-bold">¡No ho oblidis!</p>
-                                    <p>Si has estat gravant la pantalla, atura la gravació manualment a l'altra pestanya i descarrega el fitxer de vídeo.</p>
+                                    <p class="font-bold" data-translate-key="stopRecReminderTitle">¡No ho oblidis!</p>
+                                    <p data-translate-key="stopRecReminderMsg">Si has estat gravant la pantalla, atura la gravació manualment a l'altra pestanya i descarrega el fitxer de vídeo.</p>
                                 </div>
                             </div>
                             <button type="submit" id="submit-btn" class="w-full sm:w-auto bg-indigo-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-indigo-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center justify-center space-x-2">
-                                <span id="submit-btn-text">Enviar Respostes</span>
+                                <span id="submit-btn-text" data-translate-key="submitBtnText">Enviar Respostes</span>
                                 <div id="submit-loader" class="loader hidden"></div>
                             </button>
                             <div class="flex flex-col sm:flex-row sm:space-x-4 w-full justify-center">
-                                  <button type="button" id="confirm-logout-btn" class="w-full sm:w-auto mt-4 bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition-colors duration-300 hidden">
-                                    He aturat la gravació (Finalitzar)
+                                <button type="button" id="confirm-logout-btn" class="w-full sm:w-auto mt-4 bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition-colors duration-300 hidden" data-translate-key="confirmLogoutBtn">
+                                    He aturat la gravació
+                                </button>
+                                <button type="button" id="show-results-btn" class="w-full sm:w-auto mt-4 bg-green-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-green-700 transition-colors duration-300 hidden" data-translate-key="showReportBtn">
+                                    Mostrar Informe
                                 </button>
                             </div>
                         </div>
@@ -154,10 +200,14 @@
                 </form>
                 
                 <footer class="text-center mt-8 py-4 text-gray-500">
-                    <p>Pàgina generada per a practicar de forma interactiva.</p>
+                    <p data-translate-key="footerText">Pàgina generada per a practicar de forma interactiva.</p>
                 </footer>
             </div>
         </div>
+    </div>
+
+    <div id="full-report-container" class="hidden w-full p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
+        <!-- El informe completo se mostrará aquí -->
     </div>
     
      <!-- Vista de Configuración del Profesor -->
@@ -170,7 +220,17 @@
                 <h1 class="text-4xl font-bold text-gray-900">Panell de Professor</h1>
             </header>
             <main class="bg-white p-8 rounded-xl shadow-lg space-y-10">
-                <!-- Sección de Resultados -->
+                <!-- Sección de Cambiar Contraseña -->
+                <div class="mb-10">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Cambiar contraseña de acceso</h2>
+                    <form id="change-password-form" class="bg-gray-50 p-6 rounded-lg border max-w-md mx-auto flex flex-col gap-4">
+                        <input type="password" id="current-password" class="px-4 py-2 border border-gray-300 rounded-lg" placeholder="Contraseña actual" required>
+                        <input type="password" id="new-password" class="px-4 py-2 border border-gray-300 rounded-lg" placeholder="Nueva contraseña" required>
+                        <input type="password" id="confirm-password" class="px-4 py-2 border border-gray-300 rounded-lg" placeholder="Repetir nueva contraseña" required>
+                        <button type="submit" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-300">Cambiar contraseña</button>
+                        <div id="change-password-status" class="text-sm mt-2"></div>
+                    </form>
+                </div>
                 <div>
                     <h2 class="text-2xl font-bold text-gray-800 mb-4">Resultats dels Alumnes</h2>
                     <div id="teacher-actions" class="flex flex-col sm:flex-row gap-4 mb-6 pb-6 border-b">
@@ -205,6 +265,11 @@
                             <button id="load-test-btn" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-300 flex-1">Carregar Nou Test</button>
                             <button id="restore-default-btn" class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors duration-300 flex-1">Restaurar Test per Defecte</button>
                         </div>
+                        <hr class="my-6">
+                        <label for="file-upload-es-input" class="block text-sm font-medium text-gray-700 mt-4">Cargar versión en castellano del test (.ods o .csv):</label>
+                        <input type="file" id="file-upload-es-input" accept=".ods, .csv, application/vnd.oasis.opendocument.spreadsheet, text/csv" class="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-yellow-50 file:text-yellow-700 hover:file:bg-yellow-100"/>
+                        <div id="test-load-es-status" class="mt-2 text-sm"></div>
+                        <button id="load-test-es-btn" class="mt-4 bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-yellow-700 transition-colors duration-300 w-full">Cargar Test en Castellano</button>
                     </div>
                 </div>
 
@@ -237,6 +302,7 @@
         const configView = document.getElementById('config-view');
         const nameEntryView = document.getElementById('name-entry-view');
         const quizContent = document.getElementById('quiz-content');
+        const fullReportContainer = document.getElementById('full-report-container');
 
         // Botones de selección de rol
         const studentRoleBtn = document.getElementById('student-role-btn');
@@ -275,22 +341,144 @@
         let currentStudentName = '';
         let currentStudentEmail = '';
 
+        // --- I18N (Internacionalización) ---
+        const translations = {
+            ca: {
+                welcomeTitle: "Benvingut/da al Test d'Electricitat",
+                welcomeMsg: "Si us plau, selecciona el teu rol per continuar.",
+                studentBtn: "Sóc Alumne",
+                teacherBtn: "Sóc Professor",
+                studentAccessTitle: "Accés Alumnes",
+                studentAccessMsg: "Selecciona el teu nom a la llista per començar.",
+                selectNamePlaceholder: "-- Selecciona el teu nom --",
+                allStudentsDone: "Tots els alumnes ja han respost",
+                emailPlaceholder: "El teu correu electrònic",
+                selectLangLabel: "Selecciona l'idioma del test:",
+                startQuizBtn: "Començar Test",
+                backBtn: "&amp;larr; Tornar",
+                backToStartBtn: "Tornar a l'inici",
+                quizTitleDefault: "Test: Fonaments d'Electricitat",
+                quizTitleCustom: "Test Personalitzat",
+                quizSubtitle: "Posa a prova els teus coneixements. Selecciona la resposta correcta per a cada pregunta.",
+                recStep1Title: "Pas 1: Inicia la gravació",
+                recStep1Msg: "Fes clic al botó per obrir la pàgina de gravació. <b>Important: deselecciona les opcions de Webcam i So abans d'iniciar la gravació.</b> Quan hagis començat, torna aquí i confirma-ho.",
+                recStep2Title: "Pas 2: Confirma per començar",
+                recStep2Msg: "Quan hagis iniciat la gravació a l'altra pestanya, fes clic al botó de confirmació per desbloquejar el test.",
+                recConfirmedTitle: "Gravació confirmada",
+                recConfirmedMsg: "El test està desbloquejat. Ja pots començar.",
+                openRecPageBtn: "Obrir pàgina de gravació",
+                confirmRecBtn: "Pas 2: Confirmo que estic gravant (Desbloquejar Test)",
+                submitBtnText: "Enviar Respostes",
+                submitBtnSending: "Enviant...",
+                testFinishedTitle: "Test Finalitzat",
+                testFinishedMsg: "Gràcies per completar el test. Les teves respostes han estat enviades.",
+                stopRecReminderTitle: "No ho oblidis!",
+                stopRecReminderMsg: "Si has estat gravant la pantalla, atura la gravació manualment a l'altra pestanya i descarrega el fitxer de vídeo.",
+                confirmLogoutBtn: "He aturat la gravació",
+                showReportBtn: "Mostrar Informe",
+                statusSavedLocal: "Resultats guardats localment.",
+                statusErrorLocal: "Error en guardar les dades localment.",
+                statusSendingSheets: "Enviant a Google Sheets...",
+                statusSentSheets: "Informe complet enviat a Google Sheets.",
+                statusErrorNetwork: "Error de xarxa en enviar a Google Sheets.",
+                footerText: "Pàgina generada per a practicar de forma interactiva."
+            },
+            es: {
+                welcomeTitle: "Bienvenido/a al Test de Electricidad",
+                welcomeMsg: "Por favor, selecciona tu rol para continuar.",
+                studentBtn: "Soy Alumno",
+                teacherBtn: "Soy Profesor",
+                studentAccessTitle: "Acceso Alumnos",
+                studentAccessMsg: "Selecciona tu nombre en la lista para empezar.",
+                selectNamePlaceholder: "-- Selecciona tu nombre --",
+                allStudentsDone: "Todos los alumnos ya han respondido",
+                emailPlaceholder: "Tu correo electrónico",
+                selectLangLabel: "Selecciona el idioma del test:",
+                startQuizBtn: "Empezar Test",
+                backBtn: "&amp;larr; Volver",
+                backToStartBtn: "Volver al inicio",
+                quizTitleDefault: "Test: Fundamentos de Electricidad",
+                quizTitleCustom: "Test Personalizado (Castellano)",
+                quizSubtitle: "Pon a prueba tus conocimientos. Selecciona la respuesta correcta para cada pregunta.",
+                recStep1Title: "Paso 1: Inicia la grabación",
+                recStep1Msg: "Haz clic en el botón para abrir la página de grabación. <b>Importante: deselecciona las opciones de Webcam y Sonido antes de iniciar la grabación.</b> Cuando hayas comenzado, vuelve aquí y confírmalo.",
+                recStep2Title: "Paso 2: Confirma para empezar",
+                recStep2Msg: "Cuando hayas iniciado la grabación en la otra pestaña, haz clic en el botón de confirmación para desbloquear el test.",
+                recConfirmedTitle: "Grabación confirmada",
+                recConfirmedMsg: "El test está desbloqueado. Ya puedes empezar.",
+                openRecPageBtn: "Abrir página de grabación",
+                confirmRecBtn: "Paso 2: Confirmo que estoy grabando (Desbloquear Test)",
+                submitBtnText: "Enviar Respuestas",
+                submitBtnSending: "Enviando...",
+                testFinishedTitle: "Test Finalizado",
+                testFinishedMsg: "Gracias por completar el test. Tus respuestas han sido enviadas.",
+                stopRecReminderTitle: "¡No lo olvides!",
+                stopRecReminderMsg: "Si has estado grabando la pantalla, detén la grabación manualmente en la otra pestaña y descarga el archivo de vídeo.",
+                confirmLogoutBtn: "He detenido la grabación",
+                showReportBtn: "Mostrar Informe",
+                statusSavedLocal: "Resultados guardados localmente.",
+                statusErrorLocal: "Error al guardar los datos localmente.",
+                statusSendingSheets: "Enviando a Google Sheets...",
+                statusSentSheets: "Informe completo enviado a Google Sheets.",
+                statusErrorNetwork: "Error de red al enviar a Google Sheets.",
+                footerText: "Página generada para practicar de forma interactiva."
+            }
+        };
+
+        let selectedLanguage = 'ca';
+
+        function setLanguage(lang) {
+            if (!['ca', 'es'].includes(lang)) return;
+            selectedLanguage = lang;
+            document.documentElement.lang = lang;
+            
+            document.querySelectorAll('[data-translate-key]').forEach(el => {
+                const key = el.getAttribute('data-translate-key');
+                // Usar siempre las traducciones en catalán
+                const translation = translations['ca'][key];
+                if (translation) {
+                    if (['backBtn', 'recStep1Msg', 'recStep2Msg'].some(k => k === key)) {
+                        el.innerHTML = translation;
+                    } else {
+                        el.textContent = translation;
+                    }
+                }
+            });
+            
+            populateStudentDropdown();
+            loadActiveTest();
+            
+            studentEmailDisplay.placeholder = translations['ca'].emailPlaceholder;
+        }
+
+
         // --- Datos de Alumnos ---
         const defaultStudentDataCSV = `alumne,email
-Dariel Aguasvivas de Jesus,daguasvivas1494@alumnes.politecnicllevant.cat
-Miguel Alejandro Gonzalez Moreno,mgonzalez1472@alumnes.politecnicllevant.cat
-Marc Jaime Darder,mjaime1473@alumnes.politecnicllevant.cat
-Juan Luis Marquez Gutierrez,jmarquez1506@alumnes.politecnicllevant.cat
-Joan Miquel Oliver Vidal,joliver1507@alumnes.politecnicllevant.cat
-Wasim Ouchen Benali,wouchen1474@alumnes.politecnicllevant.ca
-Yamin Ouchen Benali,youchen1475@alumnes.politecnicllevant.cat
-Santiago Puerta García,spuerta1476@alumnes.politecnicllevant.cat
-Bryan German Carvajal Vargas,bcarvajal1401@alumnes.politecnicllevant.cat
-Mohamed El miri,melmiri1269@alumnes.politecnicllevant.cat
-Mohamed Kouroma,mkourouma1210@alumnes.politecnicllevant.cat
-Jaume Lopéz Llull,jlopez1211@alumnes.politecnicllevant.cat
-Francesc Roldan Pons,froldan1270@alumnes.politecnicllevant.cat
-Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
+Frances Adrover Riera,fadrover1398@alumnes.politecnicllevant.cat
+Adrià artigues Gari,aartigues1201@alumnes.politecnicllevant.cat
+Valentin Antonino Martino,vantonino1230@alumnes.politecnicllevant.cat
+Ignacio David Becerra,ibecerra854@alumnes.politecnicllevant.cat
+Alaeddin Chayel Bouchefra,achayel1267@alumnes.politecnicllevant.cat
+Nicolas Clemente Galan,nclemente1202@alumnes.politecnicllevant.cat
+Ali El Hannaoui Boubou,aelhannaoui1399@alumnes.politecnicllevant.cat
+Aadil El Makkioui Hajji,aelmakkioui972@alumnes.politecnicllevant.cat
+Alejandro Gayá Carrión,agaya858@alumnes.politecnicllevant.cat
+Miquel Gayá Catalá,mgaya1203@alumnes.politecnicllevant.cat
+Javier González Mozos,jgonzalez1204@alumnes.politecnicllevant.cat
+Kenny Steven Hurtado Porras,khurtado1268@alumnes.politecnicllevant.cat
+Guiem Jaume Iglesias,gjaume860@alumnes.politecnicllevant.cat
+Bernat Martí Parera,bmarti1205@alumnes.politecnicllevant.cat
+Salvador Medina Perello,smedina1206@alumnes.politecnicllevant.cat
+Saidou Minoungou Tarnagda,sminoungou1440@alumnes.politecnicllevant.cat
+Pau MoraMizoguchi,pmora1305@alumnes.politecnicllevant.cat
+Izan Morais Castillo,imorais1208@alumnes.politecnicllevant.cat
+Jesus Olivares Marchenko,jolivares1012@alumnes.politecnicllevant.cat
+Marwan Otmani,motmani1207@alumnes.politecnicllevant.cat
+Joan Planisi Pascual,jplanisi1458@alumnes.politecnicllevant.cat
+Carlos David Robayo Arias,crobayo975@alumnes.politecnicllevant.cat
+José Ruis Dorado,jruiz1400@alumnes.politecnicllevant.cat
+Toni Sicias sureda,tsocias1433@alumnes.politecnicllevant.cat
+Marc Tous Baena,mtous1434@alumnes.politecnicllevant.cat`;
 
         let students = [];
 
@@ -319,7 +507,8 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
         }
 
         function populateStudentDropdown() {
-            studentNameSelect.innerHTML = '<option value="" disabled selected>-- Selecciona el teu nom --</option>';
+            const placeholder = translations[selectedLanguage].selectNamePlaceholder;
+            studentNameSelect.innerHTML = `<option value="" disabled selected>${placeholder}</option>`;
             
             const allResults = JSON.parse(localStorage.getItem('testResults')) || [];
             const submittedEmails = allResults.map(result => result.studentEmail);
@@ -329,7 +518,7 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
             if (availableStudents.length === 0) {
                 const option = document.createElement('option');
                 option.value = "";
-                option.textContent = "Tots els alumnes ja han respost";
+                option.textContent = translations[selectedLanguage].allStudentsDone;
                 option.disabled = true;
                 studentNameSelect.appendChild(option);
                 startQuizBtn.disabled = true;
@@ -345,49 +534,88 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
 
 
         // --- Quiz Logic ---
-        const defaultTestCSV = `pregunta,opcio_a,opcio_b,opcio_c,opcio_d,resposta_correcta
-"Quines partícules de l'àtom tenen càrrega elèctrica positiva (+) i es troben al nucli?","Electrones","Protons","Neutrons","Ions",b
-"Quina afirmació és correcta sobre l'electricitat dinàmica (o corrent elèctric)?","Es genera quan els electrons s'acumulen a la vora d'un cos.","Es produeix quan els electrons flueixen a través d'un cos d'un extrem a l'altre .","Es manifesta només per la seva presència.","Està relacionada principalement amb les descàrregues.",b
-"Quin dels següents materials es classifica com un material aïllant a causa de la seva alta resistència elèctrica?","Coure","Plata","Goma","Alumini",c
-"Quin efecte del corrent elèctric s'aprofita principalment en els motors elèctrics?","Efecte calorífic","Efecte lluminós","Efecte magnètic","Efecte mecànic",d
-"Quina magnitud elèctrica s'expressa en Ohm (Ω) i representa l'oposició al pas del corrent elèctric?","Tensió","Intensitat","Resistència","Potència",c
-"Quin prefix del Sistema Internacional d'Unitats (SI) representa un multiplicador de 10⁻⁶?","Kilo","Mili","Micro","Nano",c
-"Segons la Llei d'Ohm, si la tensió (V) aplicada en un circuit augmenta i la resistència (R) es manté constant, què passa amb la intensitat (I) del corrent?","Disminueix","Augmenta","Es manté constant","Tendeix a infinit",b
-"Si un circuit té una tensió de 24V i una intensitat de 2A, quina és la potència elèctrica segons la Llei de Watt?","12 W","48 V","48 W","26 W",c
-"Quins són els quatre elements bàsics que formen un circuit elèctric elemental, segons les fonts?","Generador, transformador, fusible i receptor.","Conductor, generador, amperímetre i interruptor.","Generador, conductors, interruptor i receptor o càrrega .","Bateria, bombeta, voltímetre i cables.",c
-"Què passa en un curtcircuit, des del punt de vista de la Llei d'Ohm, si s'elimina la resistència de consum del circuit?","La tensió tendeix a infinit.","La intensitat disminueix a zero.","La intensitat del corrent tendeix a infinit .","La resistència augmenta dràsticament.",c
-"En un circuit en sèrie amb dues o més resistències (R1, R2, R3...), com es calcula la resistència total (RT)?","RT = (R1 * R2 * R3) / (R1 + R2 + R3)","RT = 1 / ((1/R1) + (1/R2) + (1/R3))","RT = R1 + R2 + R3","RT és sempre menor que la resistència individual més petita.",c
-"Quin tipus de corrent és avantatjós per a la transmissió d'energia a llarga distància a causa de la facilitat amb què la sua tensió pot ser elevada o disminuída mitjançant transformadors?","Corrent continu (CC)","Corrent altern (CA)","Corrent monofàsic","Corrent trifàsic",b
-"Què representa la ""intensitat eficaç"" d'un corrent altern, segons les fonts?","La intensitat màxima (Vmax) del corrent.","La intensitat mitjana del corrent al llarg d'un cicle.","La intensitat d'un corrent continu capaç de produir el mateix efecte tèrmic que el corrent altern en el mateix temps .","El valor instantani de la intensitat en qualsevol punt del cicle.",c
-"Quina és la principal avantatge dels circuits trifàsics comparats amb els monofàsics per a la distribució de l'energia elèctrica?","Menor complexitat d'instal·lació.","Únicament es produeixen per piles o bateries.","Major potència i menors costos de transport, amb potència constant .","La sua tensió no es pot modificar amb transformadors.",c
-"En una connexió en estrella d'un sistema trifàsic, quina tensió efectiva reben els segments del circuit alimentat?","La tensió entre fases (400V).","La tensió de fase-neutre (230V) .","La tensió màxima (Vmax).","Una tensió variable senza valor fix.",b
-"Quina és la relació matemàtica entre la potència aparent (S), la potència activa (P) i la potència reactiva (Q) en un circuit elèctric de corrent altern?","S = P + Q","S = P - Q","S² = P² + Q²","S = P / Q",c
-"Quina és la principal característica d'una mesura indirecta d'una magnitud elèctrica?","Es mesura directament la magnitud desitjada.","Requereix l'ús exclusiu d'un polímetre digital.","Es mesura una altra magnitud i, a partir d'aquest valor, el dispositiu calcula la magnitud desitjada .","Sempre es connecta l'instrument en paral·lel al circuit.",c
-"Abans de realitzar la mesura de resistència d'un component amb un polímetre, quina condició de seguretat s'ha de verificar?","Que el component estigui connectat a la xxa elèctrica per assegurar la continuïtat.","Que el selector estigui en l'escala de tensió més alta.","Que el component o branca de circuit a mesurar no estigui connectat a un circuit (desenergitzat) .","Que la polaritat de les puntes de mesura sigui correcta (vermella a positiu, negra a negatiu).",c
-"Quin tipus d'error de mesura és causat per l'ús d'escales inadequades en un polímetre?","Error absolut","Error relatiu","Error accidental","Ús d'escales inadequades, que pot danyar l'equip .",d
-"Quina afirmació és correcta sobre un croquis, segons les fonts?","És un dibuix a escala real i detallat amb instruments de dibuix.","És una representació a mà alçada, ràpida i amb mesures proporcionals, que pot incloure acotacions i dades per a la fabricació .","No ha de contenir dades com les acotacions o el material.","És una representació exclusiva de l'alçat i la planta.",b
-"En el sistema dièdric, quins dos plans de projecció ortogonal defineixen l'Alçat i la Planta d'una peça, respectivament?","Pla horitzontal (PH) i pla addicional de la dreta.","Pla vertical (PV) i pla horizontal (PH) .","Línia de Terra (LT) i pla vertical (PV).","Pla frontal i pla lateral.",b
-"Quina norma és essencial per a la representació de símbols i esquemes elèctrics en el dibuix industrial elèctric?","UNE-EN 50200","ITC-BT-01","UNE-EN 60617","RD 842/2002",c
-"Per a qui estan principalment orientats els esquemes de connexions (unifilars i multifilars) en la representació de circuits elèctrics?","Enginyers de disseny.","Tècnics electricistes per a l'execució material de la instal·lació .","Usuaris finals per interpretar el funcionament.","Reguladors per verificar la normativa.",b
-"Quina característica és pròpia dels diagrames funcionals o de blocs, segons les fonts?","Utilitzen exclusivament símbols normalitzats per a definir els blocs.","Les fletxes entre blocs sempre representen conductors elèctrics.","Són d'observació ràpida, tenen elevada simplicitat i no solen tenir creus entre les línies de relació .","Solen analitzar els elements del circuit de forma molt detallada.",c
-"Quin dels següents elements ha d'incloure obligatòriament un pla complet d'una instal·lació elèctrica d'un habitatge?","El consum energètic mensual històric de l'edifici.","Únicament l'esquema unifilar dels circuits interiors.","La relació gràfica i ubicació de tots els aparells elèctrics i la secció dels conductors .","Un resum de la legislació de seguretat laboral.",c
-"Quin és un dels objectius principals del Reglament Electrotècnic per a Baixa Tensió (REBT)?","Establir el preu de l'energia elèctrica.","Regular exclusivament les instal·lacions d'alta tensió.","Preservar la seguretat de les persones i els béns .","Promoure l'ús de combustibles fòssils per a la generació elèctrica.",c
-"Quina ITC-BT defineix la documentació tècnica de les instal·lacions per a ser legalment posades en servei, així com la sua tramitació davant l'òrgan competent?","ITC-BT-01","ITC-BT-03","ITC-BT-04","ITC-BT-12",c
-"Com s'estructuren les Instruccions Tècniques Complementàries (ITC-BTs) dins del REBT, segons les fonts?","En ordre alfabètic de temes.","De manera cronològica segons la sua publicació.","De manera arbòria, sent el tronc l'origen de la instal·lació i cada branca el tipus de receptor .","Com un llistat únic de prescripcions generals sense organització interna.",c
-"Les normes de la companyia subministradora (com Endesa NRZ103 per a les instal·lacions d'enllaç a Balears) són d'obligat compliment?","No, només són recomanacions.","Sí, però només si contradiuen el REBT.","Sí, són d'obligat compliment sempre que no contradiguin reglaments superiors i estiguin aprovades per la Direcció General d'Indústria .","No, només s'apliquen a les xarxes d'alta tensió.",c
-"Quina ITC-BT s'encarrega de regular les instal·lacions interiors en habitatges que contenen una banyera o dutxa?","ITC-BT-25","ITC-BT-26","ITC-BT-27","ITC-BT-31",c
-"Què significa ""CA"" en electricitat?","Corrent d'Amperatge","Corrent Altern","Corrent Actiu","Capacitat d'Ampere",b
-"Quina és la unitat de la càrrega elèctrica?","Amper","Volt","Watt","Coulomb",d
-"Quin tipus de material permet que l'electricitat flueixi fàcilment?","Aïllant","Conductor","Semiconductor","Resistor",b
-"Quin és un dispositiu de seguretat que es fon per interrompre un circuit?","Interruptor","Resistor","Fusible","Condensador",c
-"Quina és la principal font d'energia per a la majoria de centrals elèctriques?","Solar","Eòlica","Combustibles fòssils","Geotèrmica",c
-"Quina llei descriu la relació entre tensió, corrent i resistència?","Llei de Watt","Llei d'Ohm","Llei de Kirchhoff","Llei de Faraday",b
-"Quin dispositiu emmagatzema energia elèctrica en un camp elèctric?","Inductor","Transistor","Díode","Condensador",d
-"Quina és la freqüència del corrent altern a Europa?","60 Hz","50 Hz","120 Hz","100 Hz",b
-"En un circuit en paral·lel, què es manté constant en tots els components?","Corrent","Resistència","Tensió","Potència",c
-"Com s'anomena la partícula amb càrrega negativa?","Protó","Neutró","Electró","Positró",c
-`;
-        
+        const defaultTestCAT = `"pregunta","opcio_a","opcio_b","opcio_c","opcio_d","resposta_correcta"
+"Què és el corrent elèctric (electricitat dinàmica)?","Quan els electrons s'acumulen a la vora del cos.","Quan els electrons flueixen d'un extrem a l'altre d'un cos.","Quan només hi ha descàrregues.","Quan es genera electricitat estàtica.","B"
+"Quin efecte útil podem obtenir amb l'electricitat dinàmica?","Només descàrregues.","La llum, la calor o la força que mou una màquina.","Només l'acumulació de càrrega.","Només la presència de càrrega.","B"
+"Què és la Resistència elèctrica?","La força que mou els electrons.","L'oposició que posa un material al pas del corrent elèctric.","La quantitat d'energia consumida per temps.","La capacitat per fer un treball.","B"
+"Quina és la unitat per mesurar la Resistència?","El Watt (W).","El Volt (V).","L'Ohm Ω.","El Joule (J).","C"
+"La Potència elèctrica es mesura en:","Volts (V).","Ohms.","Watts (W).","Quilowatt hora (Kwh).","C"
+"Quina magnitud elèctrica es defineix com la ""capacitat per a fer un treball""?","Potència elèctrica.","Resistència.","Energia elèctrica.","Corrent elèctric.","C"
+"Quina xifra representa el prefix ""giga"" (G)?","10^12.","10^9.","10^6.","10^3.","B"
+"Si volem representar una quantitat molt petita amb el multiplicador 10^-6, utilitzem el símbol:","m (mili).","µ(micro).","p (pico).","k (quilo).","B"
+"Per què és millor utilitzar corrent altern (AC) per transportar electricitat a llarga distància?","Perquè el transformador permet obtenir tensions diferents amb facilitat.","Perquè el transformador funciona millor amb corrent continu (CC).","Perquè el voltatge es manté sempre molt baix en les línies.","Perquè només es necessita una sola línia de transmissió.","A"
+"Què tenen en comú tots els elements d'un circuit connectat en sèrie?","Tenen el mateix valor de tensió.","Estan recorreguts pel mateix corrent.","La resistència total és la suma de les inverses.","La intensitat es divideix entre ells.","B"
+"Què tenen en comú tots els elements d'un circuit connectat en paral·lel?","Estan recorreguts pel mateix corrent.","Tenen el mateix valor de tensió (voltatge) .","Només es poden connectar receptors amb alta resistència.","Comparteixen el mateix factor de potència.","B"
+"La funció principal d'un fusible és:","Controlar si el circuit està obert o tancat.","Proporcionar energia al circuit.","Fondre's i tallar el corrent si la intensitat és massa alta.","Reduir el voltatge de la instal·lació.","C"
+"Com es genera el corrent altern trifàsic?","Amb una sola bobina en un generador.","Amb tres bobines separades 120º en un generador.","Amb la unió d'una fase i el neutre.","Amb transformadors que redueixen la tensió.","B"
+"Quines lletres s'utilitzen per identificar la xarxa trifàsica de 4 conductors (les tres fases i el neutre)?","V, A,Ω, W.","L1, L2, L3 i PE.","R, S, T i N.","Tcc i Tac.","C"
+"Què és la freqüència del corrent altern i quina és la seva unitat?","És la potència útil i es mesura en Watts (W).","És el nombre de cicles complets que es produeixen en un segon i es mesura en Hertz (Hz).","És el valor màxim de la tensió i es mesura en Volts (V).","És la quantitat de corrent efectiu i es mesura en Amperes (A).","B"
+"Per aconseguir que motors potents arrenquin de manera més suau, sovint es connecten de quina manera?","Primer en estrella i després es passen a triangle.","Directament en paral·lel.","Només en sèrie.","Només en triangle (Fase-Fase).","A"
+"Quin instrument s'utilitza habitualment per mesurar tensió, intensitat i resistència (entre altres coses)?","El Wattímetre.","L'Analitzador de xarxes.","El Polímetre digital.","El Megger.","C"
+"Què vol dir fer una mesura indirecta d'una magnitud elèctrica?","Que la mesurem directament amb l'instrument.","Que mesurem una altra cosa i l'aparell calcula la magnitud desitjada.","Que només funciona per corrent continu (CC).","Que utilitzem un instrument analògic antic.","B"
+"Quina precaució de seguretat s'ha de prendre abans de mesurar una resistència amb un polímetre?","El polímetre ha d'estar apagat.","La resistència ha d'estar connectada a la tensió per comprovar que passi corrent.","La resistència no pot estar connectada a una font de tensió.","S'ha d'utilitzar sempre l'escala més petita.","C"
+"Quines són les magnituds elèctriques més comunes que necessitem mesurar per dissenyar i entendre circuits elèctrics i electrònics?","Longitud, temps i velocitat.","Força, massa i acceleració.","Voltatge, resistència, intensitat, energia i potència .","Només voltatge i intensitat.","C"
+"Quin és un exemple de mesura indirecta d'una magnitud elèctrica?","Mesurar la tensió amb un voltímetre.","Mesurar la resistència en Ohms.","Mesurar la intensitat d'un circuit mesurant el flux electromagnètic del conductor .","Mesurar la potència amb un wattímetre.","C"
+"Quines són les dues magnituds fonamentals de l'electricitat que el polímetre digital pot mesurar tant en corrent altern ( ac) com en corrent continu (cc)?","Resistència i Continuïtat.","Energia i Potència.","Tensió i Intensitat .","Flux electromagnètic i resistència de terra.","C"
+"Si mesurem tensió contínua (CC), quina punta utilitzem per al pol positiu del circuit?","La punta negra.","Qualsevol punta, no importa.","La punta vermella.","La punta blava.","C"
+"Si intentes mesurar una resistència molt gran (2 MΩ) utilitzant una escala molt petita (2 kΩ), què passa al polímetre?","La lectura serà 0 Ω (zero).","Es cremarà el polímetre.","La lectura que indica la pantalla és d'infinit.","El resultat serà molt precís.","C"
+"Què és un croquis?","Una representació a escala exacta amb instruments de dibuix.","La representació d'una peça o instal·lació al llapis i a mà alçada .","Una representació que només detalla les formes, sense dimensions.","Un pla d'instal·lació amb simbologia normalitzada.","B"
+"Què és convenient que passin amb les mesures i línies d'un croquis, encara que no sigui un dibuix a escala?","Que es facin sense excés de línies.","Que s'utilitzin instruments de dibuix per fer-les perfectes.","Que siguin proporcionals a les mesures reals .","Que no s'incloguin acotacions.","C"
+"En la representació unifilar, com es dibuixen els conductors?","Cada conductor es representa per un traç independent.","Els conductors s'agrupen en un únic traç.","Només es dibuixen els conductors de fase.","Es dibuixa la ubicació exacta de cada cable.","B"
+"Què indiquen les línies petites i transversals que creuen el traç en una representació unifilar?","L'escala del plànol.","L'alçada del cable respecte al terra.","El nombre de conductors que hi ha agrupats.","El tipus de material (rígid o flexible).","C"
+"Si un esquema s'utilitza per entendre el principi de funcionament del circuit (l'estructura general), com s'anomena?","Esquema multifilar.","Esquema de connexions.","Esquema funcional (o de blocs).","Esquema unifilar en planta.","C"
+"Quan es considera que un croquis és complet?","Quan es realitza a la lleugera i sense instruments.","Quan conté totes les dades, com les acotacions, el material i les toleràncies, necessàries per definir i fabricar la peça .","Quan només mostra les vistes de front i des de dalt.","Quan es dibuixa en tres plans de projecció.","B"
+"Quina informació ha d'incloure un plànol de planta d'una instal·lació elèctrica?","Només el tipus de tubs a utilitzar.","La relació gràfica de tots els aparells i dispositius elèctrics instal·lats, amb la seva ubicació.","Només les seccions mínimes dels conductors.","Exclusivament els càlculs de caiguda de tensió.","B"
+"Quina és una altra manera de referir-se a un esquema funcional?","Esquema multifilar.","Esquema d'emplaçament.","Esquema de blocs o esquema sinòptic.","Esquema de connexions.","C"
+"Quina ITC-BT (Instrucció Tècnica Complementària) regula la previsió de les càrregues mínimes de potència per a edificis?","ITC-BT-25.","ITC-BT-10 .","ITC-BT-05 .","ITC-BT-12.","B"
+"Quin és el Reglament Electrotècnic per a Baixa Tensió (REBT) vigent?","El REBT de 1973.","El Reial decret 842/2002, de 2 d'Agost de 2002 .","La Instrucció Tècnica Complementària (ITC-BT) de 2018.","La norma Endesa NRZ103.","B"
+"Què busca el REBT pel que fa al funcionament de les instal·lacions?","Establir els requisits per als instal·ladors autoritzats.","Assegurar el normal funcionament d'aquestes instal·lacions .","Regular les voltes elèctriques per a bestiar.","Definir les característiques dels mobles elèctrics.","B"
+"Quina ITC-BT s'indica que conté les definicions específiques dels termes utilitzats al llarg de totes les ITC-BTs del REBT?","ITC-BT-02.","ITC-BT-01 .","ITC-BT-52.","ITC-BT-10.","B"
+"En quantes Instruccions Tècniques Complementàries (ITC-BTs) se centra la segona part del REBT?","50.","10.","52 .","40.","C"
+"Quina ITC-BT defineix els circuits mínims i les seves característiques en les instal·lacions interiors d'habitatges?","ITC-BT-10.","ITC-BT-20.","ITC-BT-25.","ITC-BT-19.","C"
+"Quina ITC-BT reglamenta les verificacions prèvies a la posada en servei i les inspeccions de les instal·lacions elèctriques?","ITC-BT-04.","ITC-BT-05 .","ITC-BT-06.","ITC-BT-11.","B"
+"Quina ITC-BT descriu els materials, sistemes i bases per al càlcul i execució de les xarxes aèries per a distribució en baixa tensió?","ITC-BT-05.","ITC-BT-06 .","ITC-BT-07.","ITC-BT-08.","B"`;
+ const defaultTestES = `"pregunta","opcio_a","opcio_b","opcio_c","opcio_d","resposta_correcta"
+"¿Qué es la corriente eléctrica (electricidad dinámica)?","Cuando los electrones se acumulan al lado del cuerpo.","Cuando los electrones fluyen de un extremo al otro de un cuerpo.","Cuando solo hay descargas.","Cuando se genera electricidad estática.","B"
+"¿Qué efecto útil podemos obtener con la electricidad dinámica?","Solo descargas.","La luz, el calor o la fuerza que mueve una máquina.","Solo la acumulación de carga.","Solo la presencia de carga.","B"
+"¿Qué es la Resistencia eléctrica?","La fuerza que mueve los electrones.","La oposición que pone un material al paso de la corriente eléctrica.","La cantidad de energía consumida por tiempo.","La capacidad para hacer un trabajo.","B"
+"¿Cuál es la unidad para mesurar la Resistencia?","El Vatio (W).","El Voltio (V).","El Ohmio Ω.","El Joule (J).","C"
+"La Potencia eléctrica se mesura en:","Voltios (V).","Ohmios.","Vatios (W).","Kilovatio hora (Kwh).","C"
+"¿Qué magnitud eléctrica se define como la ""capacidad para hacer un trabajo""?","Potencia eléctrica.","Resistencia.","Energía eléctrica.","Corriente eléctrica.","C"
+"¿Qué cifra representa el prefijo ""giga"" (G)?","10^12.","10^9 .","10^6.","10^3.","B"
+"Si queremos representar una cantidad muy pequeña con el multiplicador 10^-6, utilizamos el símbolo:","m (mili).","µ(micro) .","p (pico).","k (kilo).","B"
+"¿Por qué es mejor utilizar corriente alterna (AC) para transportar electricidad a larga distancia?","Porque el transformador permite obtener tensiones diferentes con facilidad.","Porque el transformador funciona mejor con corriente continua (CC).","Porque el voltaje se mantiene siempre muy bajo en las líneas.","Porque solo se necesita una sola línea de transmisión.","A"
+"¿Qué tienen en común todos los elementos de un circuito conectado en serie?","Tienen el mismo valor de tensión.","Están recorridos por la misma corriente.","La resistencia total es la suma de las inversas.","La intensidad se divide entre ellos.","B"
+"¿Qué tienen en común todos los elementos de un circuito conectado en paralelo?","Están recorridos por la misma corriente.","Tienen el mismo valor de tensión (voltaje).","Solo se pueden conectar receptores con alta resistencia.","Comparten el mismo factor de potencia.","B"
+"La función principal de un fusible es:","Controlar si el circuito está abierto o cerrado.","Proporcionar energía al circuito.","Fundirse y cortar la corriente si la intensidad es demasiado alta.","Reducir el voltaje de la instalación.","C"
+"Cómo se genera la corriente alterna trifásica?","Con una sola bobina en un generador.","Con tres bobinas separadas 120° en un generador.","Con la unión de una fase y el neutro.","Con transformadores que reducen la tensión.","B"
+"Qué letras se utilizan para identificar la red trifásica de 4 conductores (las tres fases y el neutro)?","V, A,Ω, W.","L1, L2, L3 y PE.","R, S, T y N.","Tcc y Taco.","C"
+"¿Qué es la frecuencia de la corriente alterna y cuál es su unidad?","Es la potencia útil y se mesura en Vatios (W).","Es el número de ciclos completos que se producen en un segundo y se mide en Hertz (Hz).","Es el valor máximo de la tensión y se mide en Voltios (V).","Es la cantidad de corriente efectiva y se mesura en Amperios (A).","B"
+"Para conseguir que motores potentes arranquen de manera más suave, a menudo se conectan de qué manera?","Primero en estrella y después se pasan a triángulo.","Directamente en paralelo.","Solo en serie.","Solo en triángulo (Fase-Fase).","A"
+"¿Qué instrumento se utiliza habitualmente para medir tensión, intensidad y resistencia (entre otras cosas)?","El Vatímetro.","El Analizador de redes.","El Polímetro digital.","El Megger.","C"
+"¿Qué quiere decir hacer una medida indirecta de una magnitud eléctrica?","Que la mesuramos directamente con el instrumento.","Que medimos otra cosa y el aparato calcula la magnitud deseada.","Que solo funciona por corriente continua (CC).","Que utilizamos un instrumento analógico antiguo.","B"
+"¿Qué precaución de seguridad se tiene que tomar antes de medir una resistencia con un polímetro?","El polímetro tiene que estar apagado.","La resistencia tiene que estar conectada a la tensión para comprobar que pase corriente.","La resistencia no puede estar conectada a una fuente de tensión.","Se tiene que utilizar siempre la escala más pequeña.","C"
+"¿Cuáles son las magnitudes eléctricas más comunes que necesitamos medir para diseñar y entender circuitos eléctricos y electrónicos?","Longitud, tiempo y velocidad.","Bastante, masa y aceleración.","Voltaje, resistencia, intensidad, energía y potencia.","Solo voltaje e intensidad.","C"
+"¿Cuál es un ejemplo de medida indirecta de una magnitud eléctrica?","Medir la tensión con un voltímetro.","Medir la resistencia en Ohmios.","Medir la intensidad de un circuito midiendo el flujo electromagnético del conductor.","Medir la potencia con un vatímetro.","C"
+"¿Cuáles son las dos magnitudes fundamentales de la electricidad que el polímetro digital puede mesurar tanto en corriente alterna (ac) como en corriente continua (cc)?","Resistencia y Continuidad.","Energía y Potencia.","Tensión e intensidad.","Flujo electromagnético y resistencia de tierra.","C"
+"Si medimos tensión continua (CC), qué punta utilizamos para el polo positivo del circuito?","La punta negra.","Cualquier punta, no importa.","La punta roja.","La punta roja.","D"
+"Si intentas medirr una resistencia muy grande (2 MΩ) utilizando una escala muy pequeña (2 kΩ), que pasa al polímetro?","La lectura será 0 Ω (cero).","Se quemará el polímetro.","La lectura que indica la pantalla es de infinito.","El resultado será muy preciso.","C"
+"¿Qué es un croquis?","Una representación a escala exacta con instrumentos de dibujo.","La representación de una pieza o instalación a lápiz y a mano alzada.","Una representación que sólo detalla las formas, sin dimensiones.","Un plan de instalación con simbología normalizada.","B"
+"¿Qué es conveniente que pasen con las medidas y líneas de un croquis, aunque no sea un dibujo a escala?","Que se hagan sin exceso de líneas.","Que se utilicen instrumentos de dibujo para hacerlas perfectas.","Que sean proporcionales a las medidas reales.","Que no se incluyan acotaciones.","C"
+"En la representación unifilar, ¿cómo se dibujan los conductores?","Cada conductor se representa por un trazo independiente.","Los conductores se agrupan en un único trazo.","Solo se dibujan los conductores de fase.","Se dibuja la ubicación exacta de cada cable.","B"
+"Qué indican las líneas pequeñas y transversales que creen el trazo en una representación unifilar?","La escala del plano.","La altura del cable respecto al suelo.","El número de conductores que hay agrupados.","El tipo de material (rígido o flexible).","C"
+"Si un esquema se utiliza para entender el principio de funcionamiento del circuito (la estructura general), ¿cómo se denomina?","Esquema multifilar.","Esquema de conexiones.","Esquema funcional (o de bloques).","Esquema unifilar en planta.","C"
+"¿Cuándo se considera que un croquis es completo?","Cuando se realiza a la ligera y sin instrumentos.","Cuando contiene todos los datos, como las acotaciones, el material y las tolerancias, necesarias para definir y fabricar la pieza.","Cuando sólo muestra las vistas de frente y desde arriba.","Cuando se dibuja en tres planos de proyección.","B"
+"Qué información tiene que incluir un plano de planta de una instalación eléctrica?","Solo el tipo de tubos a utilizar.","La relación gráfica de todos los aparatos y dispositivos eléctricos instalados, con su ubicación.","Solo las secciones mínimas de los conductores.","Exclusivamente los cálculos de caída de tensión.","B"
+"Cuál es otra manera de referirse a un esquema funcional?","Esquema multifilar.","Esquema de emplazamiento.","Esquema de bloques o esquema sinóptico.","Esquema de conexiones.","C"
+"Qué ITC-BT (Instrucción Técnica Complementaria) regula la previsión de las cargas mínimas de potencia para edificios?","ITC-BT-25.","ITC-BT-10 .","ITC-BT-05 .","ITC-BT-12.","B"
+"Cuál es el Reglamento Electrotécnico para Baja Tensión (REBT) vigente?","El REBT de 1973.","El Real Decreto 842/2002, de 2 de Agost de 2002.","La Instrucción Técnica Complementaria (ITC-BT) de 2018.","La norma Endesa NRZ103.","B"
+"Qué busca el REBT en cuanto al funcionamiento de las instalaciones?","Establecer los requisitos para los instaladores autorizados.","Asegurar el normal funcionamiento de estas instalaciones.","Regular las vueltas eléctricas para ganado.","Definir las características de los muebles eléctricos.","B"
+"Qué ITC-BT se indica que contiene las definiciones específicas de los términos utilizados a lo largo de todas las ITC-BTs del REBT?","ITC-BT-02.","ITC-BT-01.","ITC-BT-52.","ITC-BT-10.","B"
+"En cuántas Instrucciones Técnicas Complementarias (ITC-BTs) se centra la segunda parte del REBT?","50.","10.","52.","40.","C"
+"Qué ITC-BT define los circuitos mínimos y sus características en las instalaciones interiores de viviendas?","ITC-BT-10.","ITC-BT-20.","ITC-BT-25.","ITC-BT-19.","C"
+"Qué ITC-BT reglamenta las verificaciones previas a la puesta en servicio y las inspecciones de las instalaciones eléctricas?","ITC-BT-04.","ITC-BT-05.","ITC-BT-06.","ITC-BT-11.","B"
+"Qué ITC-BT describe los materiales, sistemas y bases para el cálculo y ejecución de las redes aéreas para distribución en baja tensión?","ITC-BT-05.","ITC-BT-06.","ITC-BT-07.","ITC-BT-08.","B"`;       
         let questions = [];
         let answerKey = [];
         
@@ -404,10 +632,11 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
         const submitBtnText = document.getElementById('submit-btn-text');
         const submitLoader = document.getElementById('submit-loader');
         const confirmLogoutBtn = document.getElementById('confirm-logout-btn');
+        const showResultsBtn = document.getElementById('show-results-btn');
         const saveStatus = document.getElementById('save-status');
         
         function parseTestFromSheetData(sheetData) {
-            if (!sheetData || sheetData.length < 1) { 
+            if (!sheetData || sheetData.length < 1) {
                 throw new Error("El fitxer està buit.");
             }
             
@@ -511,21 +740,23 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
             e.preventDefault();
             
             submitBtn.disabled = true;
-            submitBtnText.textContent = 'Enviant...';
+            submitBtnText.textContent = translations[selectedLanguage].submitBtnSending;
             submitLoader.classList.remove('hidden');
             saveStatus.innerHTML = ''; 
 
-            let score = 0;
             const totalQuestions = questions.length;
             
             const resultsData = {
                 studentName: currentStudentName,
                 studentEmail: currentStudentEmail,
-                score: 0,
+                score: 0, // Se calculará después
                 totalQuestions: totalQuestions,
                 responses: [],
                 createdAt: new Date().toISOString()
             };
+
+            let correctas = 0;
+            let incorrectas = 0;
 
             questions.forEach((questionData, index) => {
                 const { id, question } = questionData;
@@ -535,27 +766,72 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
                 const correctAnswer = answerKey[questions.findIndex(q => q.id === id)];
                 const isCorrect = userAnswer === correctAnswer;
 
-                if (isCorrect) score++;
+                if (isCorrect) {
+                    correctas++;
+                } else if (userAnswer) {
+                    incorrectas++;
+                }
 
                 resultsData.responses.push({ question, userAnswer, correctAnswer, isCorrect });
                 questionBlock.querySelectorAll(`input[name="question${id}"]`).forEach(r => r.disabled = true);
             });
 
-            resultsData.score = score;
-            
+            let score = 0;
+            if (totalQuestions > 0) {
+                score = (10 * correctas - 5 * incorrectas) / totalQuestions;
+            }
+            resultsData.score = isNaN(score) ? 0 : score;
+
             try {
                 const allResults = JSON.parse(localStorage.getItem('testResults')) || [];
                 allResults.push(resultsData);
                 localStorage.setItem('testResults', JSON.stringify(allResults));
                 console.log("Results saved to localStorage");
-                saveStatus.textContent = "Resultats enviats correctament.";
+                saveStatus.textContent = translations[selectedLanguage].statusSavedLocal;
                 saveStatus.className = 'text-sm text-green-600 mt-2';
             } catch (error) {
                 console.error("Error writing to localStorage: ", error);
-                saveStatus.textContent = "Error en guardar les dades localment.";
+                saveStatus.textContent = translations[selectedLanguage].statusErrorLocal;
                 saveStatus.className = 'text-sm text-red-600 mt-2';
             }
             
+            const googleScriptUrl = 'https://script.google.com/macros/s/AKfycbxoRarW0ZnVCsmWCteLbW3juYPFnoHEX8AkcZJHmwIfkua_9EbFN_nhr8KoMGDV-6e6/exec';
+
+            saveStatus.innerHTML += `<br>${translations[selectedLanguage].statusSendingSheets}`;
+            
+            fetch(googleScriptUrl, {
+                method: 'POST',
+                mode: 'cors', // Cambiado a cors
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8',
+                },
+                body: JSON.stringify({ type: 'report', ...resultsData })
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Error en la respuesta del servidor.');
+                }
+            })
+            .then(data => {
+                if (data.status === "success") {
+                    saveStatus.innerHTML = translations[selectedLanguage].statusSentSheets;
+                    saveStatus.className = 'text-sm text-blue-600 mt-2';
+                } else {
+                    throw new Error(data.message || "Error desconocido de Google Sheets");
+                }
+            })
+            .catch(error => {
+                console.error('Error de red enviant a Google Sheets:', error);
+                saveStatus.innerHTML += `<br>${translations[selectedLanguage].statusErrorNetwork}: ${error.message}`;
+                saveStatus.className = 'text-sm text-red-600 mt-2';
+            })
+            .finally(() => {
+                submitLoader.classList.add('hidden');
+            });
+
             resultsContainer.classList.remove('hidden');
             stopRecordingReminder.classList.remove('hidden');
             submitBtn.classList.add('hidden');
@@ -563,20 +839,25 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
             resultsContainer.scrollIntoView({ behavior: 'smooth' });
         }
 
+        
+
         function resetQuizState() {
             quizForm.reset();
             quizFieldset.disabled = true;
             resultsContainer.classList.add('hidden');
             confirmLogoutBtn.classList.add('hidden');
+            showResultsBtn.classList.add('hidden');
+            fullReportContainer.classList.add('hidden');
+            fullReportContainer.innerHTML = '';
             stopRecordingReminder.classList.add('hidden');
             submitBtn.classList.remove('hidden');
             submitBtn.disabled = false;
-            submitBtnText.textContent = 'Enviar Respostes';
-            submitLoader.classList.add('hidden');
+            submitBtnText.textContent = translations[selectedLanguage].submitBtnText;
+            submitLoader.classList.remove('hidden');
             recordingInstructionBlock.classList.remove('bg-green-50', 'border-green-500', 'text-green-800');
             recordingInstructionBlock.classList.add('bg-rose-50', 'border-rose-500', 'text-rose-800');
-            recordingInstructionBlock.querySelector('p.font-bold').textContent = "Pas 1: Inicia la gravació";
-            recordingInstructionBlock.querySelector('p:not(.font-bold)').innerHTML = "Fes clic al botó per obrir la pàgina de gravació. <b>Important: deselecciona les opcions de Webcam i So abans d'iniciar la gravació.</b> Quan hagis començat, torna aquí i confirma-ho.";
+            recordingInstructionBlock.querySelector('[data-translate-key="recStep1Title"]').textContent = translations[selectedLanguage].recStep1Title;
+            recordingInstructionBlock.querySelector('[data-translate-key="recStep1Msg"]').innerHTML = translations[selectedLanguage].recStep1Msg;
             startRecordingBtn.classList.remove('hidden');
             confirmRecordingBtn.classList.add('hidden');
             quizContainer.classList.add('hidden');
@@ -595,13 +876,13 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
         // --- View and Event Logic ---
         
         function showView(viewToShow) {
-            [roleSelectionView, teacherLoginView, appView, configView].forEach(view => {
+            [roleSelectionView, teacherLoginView, appView, configView, fullReportContainer].forEach(view => {
                 const display = view === viewToShow ? 'flex' : 'none';
                 if (view.style.display !== display) {
                     view.style.display = display;
                 }
             });
-            if (viewToShow !== appView) {
+            if (viewToShow !== appView && viewToShow !== fullReportContainer) {
                 quizContent.style.display = 'none';
                 nameEntryView.style.display = 'flex';
                 resetQuizState();
@@ -687,6 +968,23 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
             });
         }
 
+        // Permite deseleccionar un radio button si se vuelve a hacer clic en él.
+        quizContainer.addEventListener('click', (e) => {
+            const radio = e.target.closest('input[type="radio"]');
+            if (!radio) return;
+
+            // El atributo 'data-checked' se usa para guardar el estado anterior.
+            const wasChecked = radio.getAttribute('data-checked') === 'true';
+
+            // Deseleccionar si ya estaba seleccionado
+            if (wasChecked) {
+                radio.checked = false;
+            }
+            
+            // Actualizar el estado para todos los radios del mismo grupo.
+            document.querySelectorAll(`input[name="${radio.name}"]`).forEach(r => r.setAttribute('data-checked', r.checked));
+        });
+
         studentRoleBtn.addEventListener('click', () => {
             populateStudentDropdown();
             showView(appView);
@@ -701,11 +999,10 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
             if (selectedEmail) {
                 const selectedStudent = students.find(s => s.email === selectedEmail);
                 studentEmailDisplay.value = selectedStudent.email;
-                startQuizBtn.disabled = false;
             } else {
                 studentEmailDisplay.value = "";
-                startQuizBtn.disabled = true;
             }
+            startQuizBtn.disabled = !selectedEmail;
         });
 
         nameEntryForm.addEventListener('submit', (e) => {
@@ -717,11 +1014,13 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
                 currentStudentName = selectedStudent.name;
                 currentStudentEmail = selectedStudent.email;
                 
-                studentInfoDisplay.querySelector('p.font-bold').textContent = `Alumne: ${currentStudentName}`;
+                studentInfoDisplay.querySelector('p.font-bold').textContent = `${translations['ca'].studentBtn}: ${currentStudentName}`;
                 studentInfoDisplay.querySelector('p.text-gray-600').textContent = currentStudentEmail;
                 
                 nameEntryView.style.display = 'none';
                 quizContent.style.display = 'block';
+                
+                loadActiveTest();
             }
         });
         
@@ -731,60 +1030,120 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
              showView(roleSelectionView);
         });
 
-        const BLOCK_DURATION = 60 * 60 * 1000; // 1 hour in ms
-        const MAX_ATTEMPTS = 3;
+
+        // --- BLOQUEO DE ACCESO PROFESOR ---
+        function isTeacherBlocked() {
+            const blockInfo = JSON.parse(localStorage.getItem('teacherBlockInfo'));
+            if (!blockInfo) return false;
+            if (blockInfo.blockUntil && Date.now() < blockInfo.blockUntil) {
+                return blockInfo.blockUntil;
+            }
+            return false;
+        }
+
+        function setTeacherBlockInfo(info) {
+            localStorage.setItem('teacherBlockInfo', JSON.stringify(info));
+        }
+
+        function resetTeacherBlockInfo() {
+            localStorage.removeItem('teacherBlockInfo');
+        }
+
+        function updateTeacherLoginBlockedState() {
+            const blockedUntil = isTeacherBlocked();
+            if (blockedUntil) {
+                teacherLoginForm.querySelector('button[type="submit"]').disabled = true;
+                teacherPasswordInput.disabled = true;
+                const mins = Math.ceil((blockedUntil - Date.now()) / 60000);
+                teacherLoginError.textContent = `Accés bloquejat per intents fallits. Torna-ho a intentar en ${mins} minut(s).`;
+                teacherLoginError.classList.remove('hidden');
+            } else {
+                teacherLoginForm.querySelector('button[type="submit"]').disabled = false;
+                teacherPasswordInput.disabled = false;
+                teacherLoginError.textContent = 'Contrasenya incorrecta.';
+                teacherLoginError.classList.add('hidden');
+            }
+        }
+
+        function getTeacherPassword() {
+            return localStorage.getItem('teacherPassword') || 'Feanor';
+        }
+        function setTeacherPassword(newPass) {
+            localStorage.setItem('teacherPassword', newPass);
+        }
 
         teacherLoginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            teacherLoginError.textContent = '';
-            
-            let attempts = JSON.parse(localStorage.getItem('loginAttempts')) || { count: 0, timestamp: 0 };
-            const now = new Date().getTime();
-
-            // Check if blocked
-            if (attempts.count >= MAX_ATTEMPTS && (now - attempts.timestamp) < BLOCK_DURATION) {
-                const timeLeft = Math.ceil((BLOCK_DURATION - (now - attempts.timestamp)) / (60 * 1000));
-                teacherLoginError.textContent = `Accés bloquejat. Intenta-ho de nou en ${timeLeft} minuts.`;
-                teacherLoginForm.style.display = 'none';
+            const blockedUntil = isTeacherBlocked();
+            if (blockedUntil) {
+                updateTeacherLoginBlockedState();
                 return;
             }
-
-            // Reset attempts if block has expired
-            if ((now - attempts.timestamp) >= BLOCK_DURATION) {
-                attempts = { count: 0, timestamp: 0 };
-            }
-
-            if (teacherPasswordInput.value === 'xanadu') {
-                localStorage.removeItem('loginAttempts');
+            teacherLoginError.classList.add('hidden');
+            if (teacherPasswordInput.value === getTeacherPassword()) {
                 displayTeacherResults();
                 showView(configView);
+                resetTeacherBlockInfo();
             } else {
-                attempts.count++;
-                attempts.timestamp = now;
-                localStorage.setItem('loginAttempts', JSON.stringify(attempts));
-
-                if (attempts.count >= MAX_ATTEMPTS) {
-                     teacherLoginError.textContent = `Accés bloquejat durant 1 hora per massa intents fallits.`;
-                     teacherLoginForm.style.display = 'none';
+                let blockInfo = JSON.parse(localStorage.getItem('teacherBlockInfo')) || { attempts: 0 };
+                blockInfo.attempts = (blockInfo.attempts || 0) + 1;
+                if (blockInfo.attempts >= 3) {
+                    blockInfo.blockUntil = Date.now() + 60 * 60 * 1000; // 1 hora
+                    teacherLoginError.textContent = 'Accés bloquejat per intents fallits. Torna-ho a intentar en 60 minuts.';
+                    teacherLoginError.classList.remove('hidden');
+                    teacherLoginForm.querySelector('button[type="submit"]').disabled = true;
+                    teacherPasswordInput.disabled = true;
                 } else {
-                     teacherLoginError.textContent = `Contrasenya incorrecta. Et queden ${MAX_ATTEMPTS - attempts.count} intents.`;
+                    teacherLoginError.textContent = `Contrasenya incorrecta. Intents restants: ${3 - blockInfo.attempts}`;
+                    teacherLoginError.classList.remove('hidden');
                 }
+                setTeacherBlockInfo(blockInfo);
             }
         });
 
-        teacherRoleBtn.addEventListener('click', () => {
-            let attempts = JSON.parse(localStorage.getItem('loginAttempts')) || { count: 0, timestamp: 0 };
-            const now = new Date().getTime();
+        const changePasswordForm = document.getElementById('change-password-form');
+        if (changePasswordForm) {
+            changePasswordForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const current = document.getElementById('current-password').value;
+                const nuevo = document.getElementById('new-password').value;
+                const confirm = document.getElementById('confirm-password').value;
+                const status = document.getElementById('change-password-status');
+                status.textContent = '';
+                status.className = 'text-sm mt-2';
+                if (current !== getTeacherPassword()) {
+                    status.textContent = 'La contraseña actual no es correcta.';
+                    status.classList.add('text-red-600');
+                    return;
+                }
+                if (nuevo.length < 4) {
+                    status.textContent = 'La nueva contraseña debe tener al menos 4 caracteres.';
+                    status.classList.add('text-red-600');
+                    return;
+                }
+                if (nuevo !== confirm) {
+                    status.textContent = 'Las contraseñas no coinciden.';
+                    status.classList.add('text-red-600');
+                    return;
+                }
+                setTeacherPassword(nuevo);
+                status.textContent = 'Contraseña cambiada correctamente.';
+                status.classList.add('text-green-600');
+                changePasswordForm.reset();
+            });
+        }
 
-            teacherLoginForm.style.display = 'block';
-            teacherLoginError.textContent = '';
-            
-            if (attempts.count >= MAX_ATTEMPTS && (now - attempts.timestamp) < BLOCK_DURATION) {
-                const timeLeft = Math.ceil((BLOCK_DURATION - (now - attempts.timestamp)) / (60 * 1000));
-                teacherLoginError.textContent = `Accés bloquejat. Intenta-ho de nou en ${timeLeft} minuts.`;
-                teacherLoginForm.style.display = 'none';
-            }
+        function showTeacherLoginView() {
             showView(teacherLoginView);
+            updateTeacherLoginBlockedState();
+        }
+
+        teacherRoleBtn.addEventListener('click', showTeacherLoginView);
+
+        backToRoleSelectionTeacherBtn.addEventListener('click', () => {
+            teacherPasswordInput.value = '';
+            teacherLoginError.classList.add('hidden');
+            showView(roleSelectionView);
         });
 
         const clearResultsBtn = document.getElementById('clear-results-btn');
@@ -804,8 +1163,6 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
 
         teacherLogoutBtn.addEventListener('click', () => {
              teacherPasswordInput.value = '';
-             teacherLoginError.textContent = '';
-             teacherLoginForm.style.display = 'block';
              clearResultsBtn.textContent = 'Esborrar tots els resultats';
              clearResultsBtn.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
              clearResultsBtn.classList.add('bg-red-600', 'hover:bg-red-700');
@@ -813,7 +1170,6 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
              showView(roleSelectionView);
         });
         
-        // --- Teacher Actions ---
         const exportCsvBtn = document.getElementById('export-csv-btn');
         const emailReportsBtn = document.getElementById('email-reports-btn');
         const emailStatus = document.getElementById('email-status');
@@ -835,7 +1191,7 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
                 "Data", "Alumne", "Email", "Qualificació", "Total Preguntes",
                 "Num Pregunta", "Pregunta", "Resposta Alumne", "Resposta Correcta", "Resultat"
             ];
-            csvContent += headers.map(h => escapeCSV(h)).join(',') + '\r\n';
+            csvContent += headers.map(h => escapeCSV(h)).join(',') + '\n';
 
             allResults.forEach(result => {
                 const date = new Date(result.createdAt).toLocaleString('ca-ES');
@@ -852,7 +1208,7 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
                         resp.correctAnswer.toUpperCase(),
                         resp.isCorrect ? 'Correcta' : 'Incorrecta'
                     ];
-                    csvContent += row.map(cell => escapeCSV(cell)).join(',') + '\r\n';
+                    csvContent += row.map(cell => escapeCSV(cell)).join(',') + '\n';
                 });
             });
 
@@ -885,23 +1241,35 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
                 const result = allResults[count];
                 emailStatus.textContent = `Obrint correu per a ${result.studentName}... (${count + 1}/${allResults.length})`;
 
-                let body = `Hola ${result.studentName},\n\n`;
-                body += `Aquí tens el resum del teu test d'electricitat realitzat el ${new Date(result.createdAt).toLocaleString('ca-ES')}:\n`;
-                body += `Qualificació: ${result.score} de ${result.totalQuestions}\n\n`;
-                body += `--- Detall de Respostes ---\n\n`;
+                let body = `Hola ${result.studentName},
+
+`;
+                body += `Aquí tens el resum del teu test d'electricitat realitzat el ${new Date(result.createdAt).toLocaleString('ca-ES')}:
+`;
+                body += `Qualificació: ${result.score} de ${result.totalQuestions}
+
+`;
+                body += `--- Detall de Respostes ---
+
+`;
 
                 result.responses.forEach((resp, index) => {
                     const userAnswerText = resp.userAnswer ? resp.userAnswer.toUpperCase() : 'No contestada';
                     const resultText = resp.isCorrect ? 'Correcta' : 'Incorrecta';
-                    body += `Pregunta ${index + 1}: ${resp.question}\n`;
-                    body += ` -> La teva resposta: ${userAnswerText} (${resultText})\n`;
+                    body += `Pregunta ${index + 1}: ${resp.question}
+`;
+                    body += ` -> La teva resposta: ${userAnswerText} (${resultText})
+`;
                     if (!resp.isCorrect) {
-                        body += ` -> Resposta correcta: ${resp.correctAnswer.toUpperCase()}\n`;
+                        body += ` -> Resposta correcta: ${resp.correctAnswer.toUpperCase()}
+`;
                     }
-                    body += `\n`;
+                    body += `
+`;
                 });
 
-                body += `Salutacions,\nEl teu professor`;
+                body += `Salutacions,
+El teu professor`;
 
                 const subject = "Resultats del teu Test d'Electricitat";
                 const mailtoLink = `mailto:${result.studentEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -916,8 +1284,8 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
 
 
         startRecordingBtn.addEventListener('click', () => {
-            recordingInstructionBlock.querySelector('p.font-bold').textContent = "Pas 2: Confirma per començar";
-            recordingInstructionBlock.querySelector('p:not(.font-bold)').innerHTML = "Quan hagis iniciat la gravació a l'altra pestanya, fes clic al botó de confirmació per desbloquejar el test.";
+            recordingInstructionBlock.querySelector('[data-translate-key="recStep1Title"]').textContent = translations[selectedLanguage].recStep2Title;
+            recordingInstructionBlock.querySelector('[data-translate-key="recStep1Msg"]').innerHTML = translations[selectedLanguage].recStep2Msg;
             startRecordingBtn.classList.add('hidden');
             confirmRecordingBtn.classList.remove('hidden');
         });
@@ -928,8 +1296,8 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
             submitArea.classList.remove('hidden');
             backToStartBtn.classList.add('hidden');
             
-            recordingInstructionBlock.querySelector('p.font-bold').textContent = "Gravació confirmada";
-            recordingInstructionBlock.querySelector('p:not(.font-bold)').textContent = "El test està desbloquejat. Ja pots començar.";
+            recordingInstructionBlock.querySelector('[data-translate-key="recStep1Title"]').textContent = translations[selectedLanguage].recConfirmedTitle;
+            recordingInstructionBlock.querySelector('[data-translate-key="recStep1Msg"]').textContent = translations[selectedLanguage].recConfirmedMsg;
             recordingInstructionBlock.classList.remove('bg-rose-50', 'border-rose-500', 'text-rose-800');
             recordingInstructionBlock.classList.add('bg-green-50', 'border-green-500', 'text-green-800');
             confirmRecordingBtn.classList.add('hidden');
@@ -944,19 +1312,21 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
         }
 
         function loadActiveTest() {
-            const customTestCSV = localStorage.getItem('customTestCSV');
+            let customTestCSV = localStorage.getItem('customTestCSV');
+            let customTestES = localStorage.getItem('customTestES');
+            // Cargar siempre la versión en catalán
             try {
                 if (customTestCSV) {
                     parseTestFromCSVString(customTestCSV);
-                    quizTitle.textContent = "Test Personalitzat";
+                    quizTitle.textContent = translations.ca.quizTitleCustom;
                 } else {
-                    parseTestFromCSVString(defaultTestCSV);
-                    quizTitle.textContent = "Test: Fonaments d'Electricitat";
+                    parseTestFromCSVString(defaultTestCAT);
+                    quizTitle.textContent = translations.ca.quizTitleDefault;
                 }
             } catch (e) {
-                 console.error("Error loading test, falling back to default:", e);
-                 parseTestFromCSVString(defaultTestCSV);
-                 quizTitle.textContent = "Test: Fonaments d'Electricitat";
+                console.error("Error loading test, falling back to default:", e);
+                parseTestFromCSVString(defaultTestCAT);
+                quizTitle.textContent = translations.ca.quizTitleDefault;
             }
             loadQuiz();
         }
@@ -1043,19 +1413,162 @@ Pere seguí Caldés,psegui1212@alumnes.politecnicllevant.cat`;
              studentLoadStatus.className = 'mt-2 text-sm text-blue-600';
         });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            loadActiveStudentList();
-            loadActiveTest();
+        const fileUploadEsInput = document.getElementById('file-upload-es-input');
+        const loadTestEsBtn = document.getElementById('load-test-es-btn');
+        const testLoadEsStatus = document.getElementById('test-load-es-status');
+
+        loadTestEsBtn.addEventListener('click', () => {
+            const file = fileUploadEsInput.files[0];
+            if (!file) {
+                testLoadEsStatus.textContent = 'Por favor, selecciona un archivo (.ods o .csv) primero.';
+                testLoadEsStatus.className = 'mt-2 text-sm text-red-600';
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const data = new Uint8Array(event.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const sheetData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                    parseTestFromSheetData(sheetData);
+                    const csvContent = XLSX.utils.sheet_to_csv(worksheet);
+                    localStorage.setItem('customTestES', csvContent);
+                    testLoadEsStatus.textContent = `Test en castellano cargado correctamente con ${questions.length} preguntas.`;
+                    testLoadEsStatus.className = 'mt-2 text-sm text-green-600';
+                    fileUploadEsInput.value = '';
+                } catch (e) {
+                    testLoadEsStatus.textContent = `Error: ${e.message}`;
+                    testLoadEsStatus.className = 'mt-2 text-sm text-red-600';
+                }
+            };
+            reader.readAsArrayBuffer(file);
         });
 
         quizForm.addEventListener('submit', submitQuiz);
+        
         confirmLogoutBtn.addEventListener('click', () => {
-            showView(roleSelectionView);
+            confirmLogoutBtn.classList.add('hidden');
+            showResultsBtn.classList.remove('hidden');
         });
 
-        showView(roleSelectionView);
+        showResultsBtn.addEventListener('click', () => {
+            const password = prompt("Introdueix la contrasenya per veure l'informe complet:");
+            if (password === "E8Y8dq6AGLxqXgxuITTM") {
+                showFullReport();
+            } else if (password !== null) { // No alertar si el usuario cancela
+                alert("Contrasenya incorrecta.");
+            }
+        });
+
+        function showFullReport() {
+            fullReportContainer.innerHTML = ''; // Clear previous report
+
+            const allResults = JSON.parse(localStorage.getItem('testResults')) || [];
+            const result = allResults.find(r => r.studentEmail === currentStudentEmail);
+
+            if (!result) {
+                fullReportContainer.innerHTML = '<p>No s\'han trobat resultats per a aquest alumne.</p>';
+                fullReportContainer.classList.remove('hidden');
+                return;
+            }
+
+            let correctas = 0;
+            let incorrectas = 0;
+            let noContestadas = 0;
+
+            result.responses.forEach(resp => {
+                if (resp.isCorrect) {
+                    correctas++;
+                } else if (resp.userAnswer === null) {
+                    noContestadas++;
+                } else {
+                    incorrectas++;
+                }
+            });
+
+            let detailsHtml = `<div class="bg-white p-8 rounded-xl shadow-lg">
+`;
+            detailsHtml += `<h2 class="text-3xl font-bold text-gray-900 mb-4">Informe Complet de l\'Examen</h2>`;
+            detailsHtml += `<p class="mb-2"><strong>Alumne:</strong> ${result.studentName}</p>`;
+            detailsHtml += `<p class="mb-2"><strong>Email:</strong> ${result.studentEmail}</p>`;
+            detailsHtml += `<p class="mb-4"><strong>Qualificació:</strong> ${result.score} / ${result.totalQuestions}</p>`;
+            
+            detailsHtml += `<div class="flex justify-around text-center my-6 p-4 bg-gray-50 rounded-lg">
+`;
+            detailsHtml += `<div><p class="font-bold text-2xl text-green-600">${correctas}</p><p class="text-sm text-gray-600">Correctes</p></div>`;
+            detailsHtml += `<div><p class="font-bold text-2xl text-red-600">${incorrectas}</p><p class="text-sm text-gray-600">Incorrectes</p></div>`;
+            detailsHtml += `<div><p class="font-bold text-2xl text-yellow-600">${noContestadas}</p><p class="text-sm text-gray-600">No Contestades</p></div>`;
+            detailsHtml += `</div>
+`;
+
+            detailsHtml += `<hr class="my-4">
+`;
+
+            result.responses.forEach((resp, qIndex) => {
+                const resultClass = resp.isCorrect ? 'text-green-700' : 'text-red-700';
+                
+                const questionData = questions.find(q => q.question === resp.question);
+                let userAnswerFullText = 'No contestada';
+                if (resp.userAnswer && questionData) {
+                    const option = questionData.options.find(o => o.startsWith(resp.userAnswer));
+                    if (option) {
+                        userAnswerFullText = option.substring(3).trim();
+                    }
+                }
+
+                let correctAnswerFullText = '';
+                if (questionData) {
+                    const correctOption = questionData.options.find(o => o.startsWith(resp.correctAnswer));
+                    if (correctOption) {
+                        correctAnswerFullText = correctOption.substring(3).trim();
+                    }
+                }
+
+                detailsHtml += `
+                    <div class="mb-3 pb-3 border-b last:border-b-0">
+                        <p class="font-semibold">${qIndex + 1}. ${resp.question}</p>
+                        <p>La teva resposta: <span class="font-medium ${resultClass}">${userAnswerFullText}</span></p>
+                        <p>Resposta correcta: <span class="font-medium text-blue-700">${correctAnswerFullText}</span></p>
+                    </div>
+                `;
+            });
+
+            detailsHtml += `<div class="mt-8 text-center">
+                                <button id="retake-test-btn" class="bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors duration-300">Repetir el Test</button>
+                                <button id="finalize-btn" class="bg-gray-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-600 transition-colors duration-300 ml-4">Finalitzar i Tornar a l'Inici</button>
+                            </div>`;
+            detailsHtml += `</div>`;
+
+            fullReportContainer.innerHTML = detailsHtml;
+            
+            appView.style.display = 'none';
+            fullReportContainer.style.display = 'block';
+            fullReportContainer.scrollIntoView({ behavior: 'smooth' });
+
+            document.getElementById('finalize-btn').addEventListener('click', () => {
+                showView(roleSelectionView);
+            });
+
+            document.getElementById('retake-test-btn').addEventListener('click', () => {
+                let allResults = JSON.parse(localStorage.getItem('testResults')) || [];
+                const updatedResults = allResults.filter(r => r.studentEmail !== currentStudentEmail);
+                localStorage.setItem('testResults', JSON.stringify(updatedResults));
+                showView(roleSelectionView);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadActiveStudentList();
+            loadActiveTest();
+            updateTeacherLoginBlockedState();
+            setLanguage('ca'); // Set default language on load
+            showView(roleSelectionView);
+        });
     </script>
+
+</div>
 
 </body>
 </html>
-
